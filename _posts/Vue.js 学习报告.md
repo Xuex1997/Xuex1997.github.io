@@ -1,0 +1,323 @@
+---
+layout: post
+title: 系统分析与设计_hw5
+date: 2018-04-015
+categories: 系统分析与设计
+tags: 大项目
+---
+
+# Vue.js 学习报告
+在`Vue.j`s前端组件化思路下，一个朴素的开发流程如下图所示：
+
+![](/img/SAD-workflow-component-based-vanilla.png)     
+
+这和传统的网站开发没有太大的差异：我们将编写完的`HTML/JS/CSS`代码直接推送到服务器， 然后在浏览器中查看效果并进行一些手工测试。唯一的区别在于，在组件化思路下，我们将编写`HTML/JS/CSS`的工作，从网页级别分拆到组件级别了。
+
+**组件化分拆引发的麻烦**
+
+组件化分拆的理念很好，但是写起代码来相当地生硬。例如，为了组织EzApp组件的HTML 模板、CSS样式和JS代码，我们不得不借助于宿主HTML文件：
+
+![](/img/SAD-component-split-vanilla.png)
+
+这种代码组织方式存在着一些令人不吐不快的问题：
+
+* 代码太杂乱：组件的相关代码，散落在各处，看起来不爽，维护起来麻烦
+* 组件不独立：组件存在对宿主HTML文件和样式文件的依赖，不是自包含的
+* 样式未隔离：组件样式是全局有效的，不同组件的样式声明可能冲突
+
+为了解决组件化分拆后的问题，`Vue.js`定义了一种新的文件格式：`.vue`文件，来组织一个`Vue.js`组件的各种代码资源：
+
+![](/img/SAD-vue-file.png)
+
+`.vue`文件的结构看起来很像`HTML`，直观，也容易理解。它使用不同的标签来声明组件不同类型的代码资源：
+
+	<template>：在tempalte标签内编写组件的HTML模板
+	<script> ：在script标签内编写组件的JS代码
+	<style>：在style标签内编写组件的CSS样式
+
+**组件的模块化**
+
+你或许注意到，`.vue`文件的模板声明段和样式定义段，包含的内容都没有什么特别之处，只是在JS代码段，有一行特殊的代码：`module.exports = ...`。
+
+`module.exports`是`CommonJS`规范中的模块输出声明语法，这意味着`.vue`文件的`JS`代码段， 被设计为一个`JavaScript`模块，其输出为组件配置对象。
+
+## Vue.js 安装
+* NPM方法  
+	* 安装npm:   
+		在[Node.js](https://nodejs.org/en/download/)可以根据不同平台系统选择你需要的Node.js安装包。注意`npm`版本需要大于 3.0。	
+	* 安装cnpm：   
+		由于`npm`安装速度慢，使用了淘宝的镜像及其命令`cnpm`。
+		在终端输入：   
+		`sudo npm install -g cnpm --registry=https://registry.npm.taobao.org`    
+		输入密码即可
+
+	* 命令行工具
+		`Vue.js`提供一个官方命令行工具，可用于快速搭建大型单页应用。
+		* 全局安装`vue-cli`
+
+			```
+			$ sudo cnpm install --global vue-cli
+			```
+			出现下面信息表示安装成功   
+			![](/img/SAD-1.png)
+		* 创建一个基于 webpack 模板的新项目
+			
+			```
+			$ vue init webpack my-project
+			```
+			这里需要进行一些配置，默认回车即可
+			![](/img/SAD-2.png)
+
+		* 进入项目，安装并运行：
+			
+			```
+			$ cd my-project
+			$ cnpm install
+			$ cnpm run dev
+			```
+			运行正常就会出现如下信息：     
+			![](/img/SAD-3.png)   
+		* 成功执行以上命令后访问`http://localhost:8080/`，输出结果如下所示：
+			![](/img/SAD-4.png)
+
+## 目录解析
+使用`vue init webpack my-project`安装了项目`my-project`，此文件夹的目录解析：
+
+|目录/文件|	说明|
+|---|---|
+|build|项目构建(webpack)相关代码|
+|config|配置目录，包括端口号等|
+|node_modules	|npm加载的项目依赖模块|
+|src|这里是我们要开发的目录，基本上要做的事情都在这个目录里。里面包含了几个目录及文件：`assets`: 放置一些图片，如logo等。`components`: 目录里面放了一个组件文件，可以不用。`App.vue`: 项目入口文件，我们也可以直接将组件写这里，而不使用 components 目录。`main.js`: 项目的核心文件|
+|static|静态资源目录，如图片、字体等|
+|test|初始测试目录，可删除|
+|.xxxx文件|这些是一些配置文件，包括语法配置，`git`配置等|
+|index.html|首页入口文件，你可以添加一些`meta`信息或统计代码|
+|package.json|项目配置文件|
+|README.md|项目的说明文档，markdown 格式|
+
+## Vue.js 起步
+每个`Vue`应用都需要通过实例化`Vue`来实现。
+语法格式如下：
+
+```
+var vm = new Vue({
+	el: '#vue_det',
+	data: {
+		site: "Vue",
+		url: "www.example.com",
+		alexa: "10000"
+	},
+	methods: {
+		details: function() {
+			return  this.site + " 教程";
+		}
+	}
+});
+```
+
+`Vue`构造器中有一个`el`参数，它是`DOM`元素中的`id`。在上面实例中`id`为 `vue_det`，在`div`元素中：    
+`<div id = "vue_det"></div>`   
+这意味着我们接下来的改动全部在以上指定的`div`内，`div`外部不受影响。
+
+如何定义数据对象。
+
+* `data`用于定义属性，实例中有三个属性分别为：site、url、alexa。
+* `methods`用于定义的函数，可以通过`return`来返回函数值。
+* `{{ }}`用于输出对象属性和函数返回值。
+
+当一个`Vue`实例被创建时，它向`Vue`的响应式系统中加入了其`data`对象中能找到的所有的属性。当这些属性的值发生改变时，`html`视图将也会产生相应的变化。注意**设置属性也会影响到原始数据，反之亦然**
+
+除了数据属性，`Vue`实例还提供了一些有用的实例属性与方法。它们都有前缀`$`，以便与用户定义的属性区分开来。
+
+```
+document.write(vm.$data === data) // true
+document.write(vm.$el === document.getElementById('vue_det')) // true
+```
+
+## Vue.js 模板语法
+`Vue.js`使用了基于`HTML`的模版语法，允许开发者声明式地将`DOM`绑定至底层`Vue`实例的数据。
+`Vue.js`的核心是一个允许你采用简洁的模板语法来声明式的将数据渲染进`DOM`的系统。
+结合响应系统，在应用状态改变时，`Vue`能够智能地计算出重新渲染组件的最小代价并应用到 `DOM`操作上。
+
+### 插值
+* 文本    
+	数据绑定最常见的形式就是使用`{{...}}`（双大括号）的文本插值：
+	
+	```
+	<div id="app">
+		<p>{{ message }}</p>
+	</div>
+	```
+
+* Html    
+	使用`v-html`指令用于输出`html`代码：
+
+	```
+	<div id="app">
+		<div v-html="message"></div>
+	</div>
+	<script>
+	new Vue({
+		el: '#app',
+		data: {
+			message: '<h1>教程</h1>'
+		}
+	});
+	</script>
+	```
+
+* 属性    
+	`HTML`属性中的值应使用`v-bind`指令。
+	以下实例判断`class`的值，如果为`true`使用`class1`类的样式，否则不使用该类：
+
+	```
+	<div id="app">
+		<label for="r1">修改颜色</label><input type="checkbox" v-model="class1" id="r1">
+		<br><br>
+		<div v-bind:class="{'class1': class1}">
+			directiva v-bind:class
+		</div>
+	</div>
+
+	<script>
+	new Vue({
+		el: '#app',
+		data:{
+			class1: false
+		}
+	});
+	</script>
+	```
+
+* 表达式
+	`Vue.js`都提供了完全的`JavaScript`表达式支持。
+* 指令   
+	指令是带有`v-`前缀的特殊属性。
+	指令用于在表达式的值改变时，将某些行为应用到`DOM`上。如下例子：
+	
+	```
+	<div id="app">
+    	<p v-if="seen">现在你看到我了</p>
+	</div>
+    
+	<script>
+	new Vue({
+		el: '#app',
+		data: {
+			seen: true
+		}
+	})
+	</script>
+	```
+	这里，`v-if`指令将根据表达式 `seen`的值(`true`或`false`)来决定是否插入`p`元素。
+* 参数    
+	参数在指令后以冒号指明。例如，`v-bind`指令被用来响应地更新`HTML`属性：
+	
+	```
+	<div id="app">
+		<pre><a v-bind:href="url">教程</a></pre>
+	</div>
+	
+	<script>
+	new Vue({
+		el: '#app',
+		data: {
+			url: 'http://www.example.com'
+		}
+	})
+	</script>
+	```
+
+	在这里`href`是参数，告知`v-bind`指令将该元素的`href`属性与表达式`url`的值绑定。
+	另一个例子是 v-on 指令，它用于监听 DOM 事件：   
+	`<a v-on:click="doSomething">`    
+	在这里参数是监听的事件名。
+
+* 修饰符
+	修饰符是以半角句号`.`指明的特殊后缀，用于指出一个指定应该以特殊方式绑定。例如,`.prevent` 修饰符告诉`v-on` 指令对于触发的事件调用`event.preventDefault()`：    
+	`<form v-on:submit.prevent="onSubmit"></form>`     
+
+* 用户输入
+	在`input`输入框中我们可以使用`v-model`指令来实现双向数据绑定：
+	
+	```
+	<div id="app">
+		<p>{{ message }}</p>
+		<input v-model="message">
+	</div>
+	
+	<script>
+	new Vue({
+		el: '#app',
+		data: {
+			message: 'Hello!'
+		}
+	})
+	</script>
+	```
+	按钮的事件我们可以使用`v-on`监听事件，并对用户的输入进行响应。    
+	以下实例在用户点击按钮后对字符串进行反转操作：
+	
+	```
+	<div id="app">
+		<p>{{ message }}</p>
+		<button v-on:click="reverseMessage">反转字符串</button>
+	</div>
+	
+	<script>
+	new Vue({
+		el: '#app',
+		data: {
+			message: 'Hello!'
+		},
+		methods: {
+			reverseMessage: function () {
+				this.message = this.message.split('').reverse().join('')
+			}
+		}
+	})
+	</script>
+	```
+* 过滤器     
+	`Vue.js` 允许自定义过滤器，被用作一些常见的文本格式化。由"管道符"指示, 格式如下：
+	
+	```
+	<!-- 在两个大括号中 -->
+	{{ message | capitalize }}
+
+	<!-- 在 v-bind 指令中 -->
+	<div v-bind:id="rawId | formatId"></div>
+	```
+	
+	过滤器函数接受表达式的值作为第一个参数。     
+	过滤器可以串联：    
+	`{{ message | filterA | filterB }}`     
+	过滤器是`JavaScript`函数，因此可以接受参数：    
+	`{{ message | filterA('arg1', arg2) }}`    
+	这里，`message`是第一个参数，字符串 `'arg1'` 将传给过滤器作为第二个参数， `arg2`表达式的值将被求值然后传给过滤器作为第三个参数。
+
+* 缩写    
+	`v-bind`缩写
+	
+	```
+	<!-- 完整语法 -->
+	<a v-bind:href="url"></a>
+	<!-- 缩写 -->
+	<a :href="url"></a>
+	```
+	`v-on` 缩写
+	
+	```
+	<!-- 完整语法 -->
+	<a v-on:click="doSomething"></a>
+	<!-- 缩写 -->
+	<a @click="doSomething"></a>
+	```
+   
+
+
+			
+
+
+

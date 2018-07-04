@@ -12,6 +12,8 @@ tags: WebGL, Three.js
 ```
 open -n /Applications/Google\ Chrome.app/ --args --disable-web-security  --user-data-dir=/Users/xue/Desktop/MyChromeDevUserData/
 ```
+
+或者用brackets App打开文件，点击右边的闪电⚡️符号就可以开启浏览器
 ## 1.1  什么是WebGL和Three.js
 ### 1.1.1 什么是WebGL
 `WebGL`是基于`OpenGL ES 2.0`的`Web`标准，可以通过`HTML5 Canvas`元素作为`DOM`接口访问。`WebGL`可以看做是将`OpenGL ES`（OpenGL for Embedded Systems，OpenGL嵌入式版本，针对手机、游戏机等设备相对较轻量级的版本）移植到了网页平台，像Chrome、Firefox这些现代浏览器都实现了`WebGL`标准，使用`JavaScript`就可以用你熟悉的、类似`OpenGL`的代码编写了。

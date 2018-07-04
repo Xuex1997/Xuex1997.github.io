@@ -3,7 +3,7 @@ layout: post
 title: WebGL和Three.js学习笔记
 date: 2018-07-04
 categories: 计算机图形学
-tags: WebGL, Three.js
+tags: WebGL Three.js
 ---
 # WebGL和Three.js学习笔记
 #### 注：跨域问题解决方法

@@ -66,7 +66,7 @@ Js 中基本类型`number`,`string`,`boolean`都有对应的包装类型。当�
 	    x = 1;
 	}
 	```
-   ![](JavaScript深入浅出-2.png)
+   ![](/img/JavaScript深入浅出-2.png)
 
 * 基于原型的继承
 	* 使用`Object.create`,这是比较提倡的方法
@@ -79,10 +79,10 @@ Js 中基本类型`number`,`string`,`boolean`都有对应的包装类型。当�
 	Student.prototype.constructor = Student;//保持一致性
 	```
 	`Object.create(Person.prototype)`函数创建一个空对象，这个空对象的原型就是`Person.prototype`，即Person的构造子，让Student的构造子等于它，就生成了一条原型链    
-	![](JavaScript深入浅出-1.jpeg)
+	![](/img/JavaScript深入浅出-1.jpeg)
 	
 	* 使用`new`的方法，虽然这样也可以实现继承，但是如果函数本身内部有些属性，在实例化的时候不好传入参数，比如下图中如果`Person`函数有名字和年龄属性，那么`new`的时候应该传入什么值呢；使用1处的方法是不对的，这样子没办法做到继承，给`Student`加自己的方法也会影响到`Person`;3是理想的继承方式，但是在ES5之后才支持，可以用右侧的方法进行兼容。(返回一个空对象，并且原型指向参数)    
-	![](JavaScript深入浅出-8.png)
+	![](/img/JavaScript深入浅出-8.png)
 	* 注意：大多数 **函数对象** 的 **prototype属性对象** 的 **原型** 都是 **Object对象** 的 **prototype对象** 。也正因为如此，大多数对象都有`toString`， `valueof`等继承自`Object.prototype`的方法，但也有一些特例：
 		* 通过`Object.create(null)`创建出来的对象，就没有`_proto_`，因为它创建了一个空对象而且这个空对象的原型指向`null`，因此它也不会有`toString`等方法
 		
@@ -91,7 +91,7 @@ Js 中基本类型`number`,`string`,`boolean`都有对应的包装类型。当�
 		obj2._proto_;//undefined
 		obj2.toString;//undefined
 		```
-		![](JavaScript深入浅出-3.png)
+		![](/img/JavaScript深入浅出-3.png)
 		
       * 通过`bind`方法返回的函数就没有`prototype`属性
   
@@ -102,7 +102,7 @@ Js 中基本类型`number`,`string`,`boolean`都有对应的包装类型。当�
 		typeof binded; //function
 		binded.prototype; //undefined
 		```
-		![](JavaScript深入浅出-4.png)
+		![](/img/JavaScript深入浅出-4.png)
 
 * prototype属性
 	* 改变prototype
@@ -122,20 +122,20 @@ Js 中基本类型`number`,`string`,`boolean`都有对应的包装类型。当�
 		marry.y;//2
 		maty.x;//undefined
 		```
-		![](JavaScript深入浅出-5.png)
+		![](/img/JavaScript深入浅出-5.png)
 		
 	* 内置构造器的prototype属性
 		* 修改构造器的prototype会有边界效应，就是在for遍历的时候会变量出修改添加的属性，要想避免这个效应，可以用define property设置相应的属性。
 		* 例如：假如大多数对象上希望有某个属性x，设置`Object.property.x=1`就会有边界效应（`for in`的时候会把这个x遍历出来）。可以通过`defineproperty`设置相应的属性。
-		![](JavaScript深入浅出-6.png)
+		![](/img/JavaScript深入浅出-6.png)
 		
 	* 检测某个对象是否有某个属性：
 		* `属性 in 对象`:这会在整个原型链上查找这个属性
 		* `obj.hasOwnProperty('z')`这只会在这个对象及它的原型上查找这个属性
-		![](JavaScript深入浅出-7.png)
+		![](/img/JavaScript深入浅出-7.png)
  
  * 模拟重载
-	![](JavaScript深入浅出-9.png)
+	![](/img/JavaScript深入浅出-9.png)
 	
 
 ## 函数和作用域
@@ -143,7 +143,7 @@ Js 中的函数也是对象
 
 * 创建函数
 	* 函数申明 
-		![](JavaScript深入浅出-10.png)
+		![](/img/JavaScript深入浅出-10.png)
 	* 函数表达式
-		![](JavaScript深入浅出-11.png)
+		![](/img/JavaScript深入浅出-11.png)
 	* 区别：函数申明可以前置，被提升，而函数表达式不会

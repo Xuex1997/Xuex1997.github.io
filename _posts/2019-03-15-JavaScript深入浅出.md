@@ -227,39 +227,140 @@ Js 中基本类型`number`,`string`,`boolean`都有对应的包装类型。当�
 		`obj = JSON.parse('{"x":1}');`
 
 	* 自定义     
-	![](../img/JavaScript深入浅出-38.png)
+	![](/img/JavaScript深入浅出-38.png)
 	
 
 ## 5. 数组
 ### 5.1 数组概述
 * Js的数组是**弱类型**，数组中可以有不同类型的元素，数组元素甚至可以是对象或其他数组
 
-	![](../img/JavaScript深入浅出-39.png)
+	![](/img/JavaScript深入浅出-39.png)
 
 * 创建数组（size：0～2^23 - 1）
 	* 字面量 
 	* `Array` 构造器（`new`可以省略）
 		
-		![](../img/JavaScript深入浅出-40.png)
+		![](/img/JavaScript深入浅出-40.png)
 
 * 数组元素读写	
 
-	![](../img/JavaScript深入浅出-43.png)
+	![](/img/JavaScript深入浅出-43.png)
 
 * 数组元素增删，动态的，无需指定大小
 
-	![](../img/JavaScript深入浅出-42.png)
+	![](/img/JavaScript深入浅出-42.png)
 
 ### 5.2 二维数组和稀疏数组
 * 二维数组和其他语言的差不多
 * 稀疏数组：是指有些数组里面有值的数不多，大部分都是`undefined`，所以遍历的时候可以用`in`来判断	
 
-    ![](../img/JavaScript深入浅出-41.png)
+    ![](/img/JavaScript深入浅出-41.png)
+    
+### 5.3 数组方法
+* `Array.prototype.join` 将数组转起字符串
 
+	```
+	var arr = [1,2,3];
+	arr.join();//"1,2,3"
+	arr.join("_");//"1_2_3"
 
+	//重复输出某个字符串
+	function repeatString(str, n) {
+	    return new Array(n+1).join(str);
+	}
+	repeatString("a", 3); //"aaa"
+	repeatString("Hi", 5); //"HiHiHiHiHi"
+	```
+* `Array.prototype.reverse` 将数组逆序，而且原来的数组也会被修改
 
+	![](/img/JavaScript深入浅出-45.png)
+	
+* `Array.prototype.sort` 排序，默认情况下是按照字符串排序的(字典序），而且原来的数组也会被修改
+	* 若想按照数字大小比较，则要用一个比较函数
 
+		```
+		arr.sort(function(a,b) {
+		    return a - b;
+		});//升序
+		```
+* `Array.prototype.concat` 数组合并，返回合并后的新数组，原来的数组不会被修改，若传入的是数组，会把它拉平（只拉平一次）
 
+	![](/img/JavaScript深入浅出-46.png)
+
+* `Array.prototype.slice` 返回一个含有提取元素的新数组，原数组不会被修改
+	* `arr.slice(); // [0, end]`
+	* `arr.slice(begin);// [begin, end]`
+	* `arr.slice(begin, end);// [begin, end)包含begin，但不包含end `
+	* 如果该参数为负数， 则它表示在原数组中的倒数第几个元素结束抽取。 `slice(-2,-1)`表示抽取了原数组中的倒数第二个元素到最后一个元素（不包含最后一个元素，也就是只有倒数第二个元素）。
+
+	![](/img/JavaScript深入浅出-47.png)
+
+* `Array.prototype.splice` 修改拼接，返回修改后的数组，原数组也会被修改
+	* `array.splice(start[, deleteCount[, item1[, item2[, ...]]]]) `
+		* `start​`: 指定修改的开始位置（从0计数）。如果超出了数组的长度，则从数组末尾开始添加内容；如果是负值，则表示从数组末位开始的第几位（从-1计数）；如果负数的绝对值大于数组的长度，则表示开始位置为第0位。
+		* `deleteCount` 可选, 整数，表示要移除的数组元素的个数。如果 `deleteCount` 大于 `start` 之后的元素的总数，则从 `start` 后面的元素都将被删除（含第 `start` 位）。如果 deleteCount 被省略，则其相当于 array.length - start。如果`deleteCount` 是 0 或者负数，则不移除元素。这种情况下，至少应添加一个新元素。
+		* `item1, item2, ...` 可选。要添加进数组的元素,从start 位置开始。如果不指定，则只删除数组元素。
+		* 返回值：由被删除的元素组成的一个数组。如果只删除了一个元素，则返回只包含一个元素的数组。如果没有删除元素，则返回空数组。
+
+	![](/img/JavaScript深入浅出-48.png)
+	
+----
+**ES5**
+
+* `Array.prototype.forEach`  对数组的每个元素执行一次提供的函数。
+
+	```
+	var array1 = ['a', 'b', 'c'];
+
+	array1.forEach(function(element) {
+		console.log(element);
+	});//a b c
+	```
+* `Array.prototype.map`  创建一个新数组，其结果是该数组中的每个元素都调用一个提供的函数后返回的结果。原来的数组不会被修改
+
+	```
+	var arr = [1,2,3];
+	arr.map(function(x) {
+	    return x+10;
+	});//[11,12,13]
+	arr;//[1,2,3]
+	```
+
+* `Array.prototype.filter`  创建一个新数组, 其包含通过所提供函数实现的测试的所有元素。 原数组也不会被修改。
+
+	```
+	var words = ['spray', 'limit', 'elite', 'exuberant', 'destruction', 'present'];
+	const result = words.filter(word => word.length > 6);
+	console.log(result);
+	// Array ["exuberant", "destruction", "present"]
+	console.log(words);//Array ["spray", "limit", "elite", "exuberant", "destruction", "present"]
+	```
+	
+* `Array.prototype.every`  测试数组的**所有元素**是否都通过了指定函数的测试。
+
+* `Array.prototype.some`  测试是否**至少有一个元素**通过由提供的函数实现的测试。
+
+* `Array.prototype.reduce` 方法对数组中的每个元素执行一个由您提供的`reducer`函数(升序执行)，将其结果汇总为单个返回值。回调函数第一次执行时，`accumulator` 和`currentValue`的取值有两种情况：如果调用`reduce()`时提供了`initialValue`(例子中的5），`accumulator`取值为`initialValue`，`currentValue`取数组中的第一个值；如果没有提供 `initialValue`，那么`accumulator`取数组中的第一个值，`currentValue`取数组中的第二个值。
+
+	```
+	var array1 = [1, 2, 3, 4];
+	var reducer = function(accumulator, currentValue) {
+		return accumulator + currentValue;
+	}
+	console.log(array1.reduce(reducer));
+//  10 (1 + 2 + 3 + 4)
+	console.log(array1.reduce(reducer, 5));
+15 (5 + 1 + 2 + 3 + 4) //accumulator为5
+	```
+* `Array.prototype.reduceRight` 方法和上面的一样，只是它是从右边开始的
+
+	![](/img/JavaScript深入浅出-49.png)
+
+* `Array.prototype.indexOf` 方法返回在数组中可以找到一个给定元素(第一个参数）的第一个索引，如果不存在，则返回-1。第二个参数可选，表示开始查找的位置。
+
+* `Array.prototype.lastIndexOf` 和上面一样，只是从右向左查找
+
+* `Array.isArray(obj)` 判断obj是否是数组
 
 
 ## 6. 函数和作用域
@@ -416,14 +517,37 @@ Js 中的函数也是对象
 	* 内置构造器的prototype属性
 		* 修改构造器的prototype会有边界效应，就是在for遍历的时候会变量出修改添加的属性，要想避免这个效应，可以用define property设置相应的属性。
 		* 例如：假如大多数对象上希望有某个属性x，设置`Object.property.x=1`就会有边界效应（`for in`的时候会把这个x遍历出来）。可以通过`defineproperty`设置相应的属性。
-		![](/img/JavaScript深入浅出-6.png)
+		
+			![](/img/JavaScript深入浅出-6.png)
 		
 	* 检测某个对象是否有某个属性：
 		* `属性 in 对象`:这会在整个原型链上查找这个属性
 		* `obj.hasOwnProperty('z')`这只会在这个对象本身查找这个属性
-		![](/img/JavaScript深入浅出-7.png)
+
+			![](/img/JavaScript深入浅出-7.png)
  
- * 模拟重载   
+ * 模拟重载  
+  
 	![](/img/JavaScript深入浅出-9.png)
+	
+	
+	
+## 9.正则表达式（模式匹配）
+
+* test方法
+
+	```
+	/\d\d\d/.test("123")//true;
+	new RegExp("Bosn").test("Hi,Bosn");//true
+	```
+
+* 正则基础
+
+	![](/img/JavaScript深入浅出-50.png)
+
+* 范围符号
+
+	![](/img/JavaScript深入浅出-51.png)
+
 	
 

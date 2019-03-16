@@ -45,9 +45,222 @@ Js 中基本类型`number`,`string`,`boolean`都有对应的包装类型。当�
 	例如： `Object.prototype.toString.apply([]) === "[object Array]"`
 
 ## 2. 表达式和运算符
+> 表达式：JS短语，可以使JS解释器用来产生一个值 --- 《JS权威指南》
+
+### 2.1 表达式
+* 原始表达式：
+	* 常量、直接量
+	* 关键字
+	* 变量 
+
+* 数组、对象的初始化表达式
+
+	```
+	[1,2]     new Array(1,2);
+	[1,,,4]   [1,undefined, undefined, 4]
+	{x:1, y:2}   var o = new Object(); o.x - 1; o.y = 2;
+	```
+	
+* 函数表达式
+	
+	```
+	var fe = function() {};
+	(function(){console.log('hello world');})();(立即执行的函数表达式）
+	```
+
+* 属性访问表达式
+
+	```
+	var o = {x:1};
+	o.x 
+	o['x']
+	```
+* 调用表达式
+
+	```
+	func();
+	```
+* 对象创建表达式 
+
+	```
+	new Func(1,2);
+	new Object;
+	```
+
+### 2.2 运算符
+* 一元: `++ --`   
+		` +str (可以把字符串转换为数字，若有非数字字符则返回NaN` 
+* 二元: `+ - * / %`
+* 三元：条件运算符 `c ? a : b`
+* 特殊运算符
+	* 逗号运算符`,`:`从左到右计算表达式的值，然后取最右边的
+	* 删除 `delete`：删除对象的某个属性，注意只有`configurable`标签为`true`的属性才可以被`delete`，而且只有这个对象的属性才能被删除，在它原型链上的属性是不能被删除的
+	* `in` : 判断某一个对象是否有某一属性
+     `winodw.x = 1; 'x' in window; //true `
+     
+    * `instanceof` 和 `typeof`
+    * `new`运算符: 可以创造一个构造器的实例
+    * `this`运算符
+
+* 运算符优先级     
+![](/img/JavaScript深入浅出-25.png)
+
 ## 3. 语句
+* `block` 块： 用一对花括号定义，常与if或者for循环，while等结合起来使用（一个完整的语句以坐花括号开头的话会被理解成块，而不是对象字面量）**没有块级作用域**
+* 声明语句 `var` ：   
+	![](/img/JavaScript深入浅出-26.png)
+
+* `try catch` 异常捕获： 注意`try`和`catch`的对应，如果内部的异常没有被处理，在抛到外部之前需要先执行`finally`语句；一个异常被`catch`之后不需要再二次`catch`   
+	![](/img/JavaScript深入浅出-27.png)
+
+* `function` 语句：定义对象，一般叫函数声明，函数声明一般会被前置
+
+* `for...in` ：
+	* 顺序不确定
+	* enumenable为false时不会出现
+	* for...in 对象属性时会受原型影响 
+* `switch`语句：注意`break`的使用
+* `with` 语句：可以修改当前作用域，已经不建议使用`with`，严格模式下不可以使用
+	```
+	with({x:1}) {
+    	console.log(x);//1
+	}
+	```
+* 严格模式    
+   ![](/img/JavaScript深入浅出-28.png)    
+   ![](/img/JavaScript深入浅出-30.png)      
+   ![](/img/JavaScript深入浅出-29.png)
+
 ## 4. 对象
+### 4.1 对象概述：
+* 概述：对象中包含一系例**无序**的属性，每个属性都有一个字符串`key`和对应的`value`
+* 对象结构   
+	![](/img/JavaScript深入浅出-31.png)
+
+### 4.2 创建对象
+* 字面量（原型是Object.prototype）
+
+	```
+	var obj1 = {x:1, y:2}
+	```
+* `new` 构造器：构造出的对象的原型会指向构造器函数的prototype属性对象    
+	![](/img/JavaScript深入浅出-32.png)   
+* `Object.create()` ：接收一个参数对象，返回一个对象，并且让这个对象的原型指向参数对象
+
+### 4.3 属性操作
+* 读写属性 
+* 属性删除：一些属性可以删除，但是prototype一般是不可以删除的；全局变量局部变量，函数声明都是不可能被删除的；但一些隐式创建的变量是可以被删除的；eval声明的变量是可以被删除的
+* 属性检测
+	* `in`：检测对象及原型链上的属性
+	* `hasOwnProperty`：只检测对象自己的属性
+	* `propertyIsEnumerable`：检测属性是否可以枚举
+	* 自定义属性：   
+		`Object.defineProperty(obj, prop, descriptor)`
+		* `obj`：要在其上定义属性的对象。
+		* `prop`：要定义或修改的属性的名称。
+		* `descriptor`：将被定义或修改的属性描述符，默认都是false。
+		* 还有可以定义多个属性`Object.defineProperties`    
+		![](/img/JavaScript深入浅出-35.png) 
+		
+* 属性枚举
+
+	```
+	for （key in o) {
+     	...//就可以得到对象o上面的一些属性
+	}
+	```
+
+### 4.4 get/set方法（另一种读写方式）
+* 语法: `set/get 属性名 {操作} `
+
+	```
+	var person ={ _name : "chen", 
+	              age : 21, 
+	              set name(name) {
+	                  this._name = name;
+	              },
+	              get name() {
+	                  return this._name;
+	              }
+	}
+	```
+	
+	* 当你给一个属性定义setter或者getter，或者两者都有时，这个属性会被定义为“**访问描述符**”。
+	* 对于访问描述符来说，`Javascript`会忽略他们的`value`和`writable`特性。取而代之的是`set`和`get`函数。 
+		* `get`: 在读取属性时，调用的函数。只指定get则表示属性为**只读属性**。默认值为undefined。 
+		* `set`: 在写入属性时调用的函数。在写入属性时调用的函数。只指定set则表示属性为**只写属性**。默认值为`undefined`。
+
+   			![](/img/JavaScript深入浅出-33.png) 
+    		![](/img/JavaScript深入浅出-34.png) 
+ 
+    
+### 4.3 属性标签
+* 标签
+	* `configurable`: 能否使用delete、能否修改属性标签。
+	* `enumerable`: 对象属性是否可通过for-in循环返回。一旦把该属性定义为`false`之后，那么除了`writable`能从`true`改为`false`之外，其他所有的属性都无法再修改
+	* `writable`: 对象属性是否可修改。
+	* `value`: 对象属性的值，默认值为`undefined`。
+
+* 查看属性标签   
+	`Object.getOwnPropertyDescriptor(obj, 'prop')`     
+	如果有这个属性，就返回这个属性的标签对象，否则返回`null`.
+* 总结    
+	
+	![](/img/JavaScript深入浅出-36.png)	
+	
+	
+### 4.3 对象标签，对象序列化
+* 对象标签
+	* `[[proto]]`: 原型标签
+	* `[[class]]`: 表示对象是那个类型
+	* `[[extensible]]`: 表示对象是否可扩展，添加新的属性
+	
+		![](/img/JavaScript深入浅出-37.png)
+
+* 对象序列化   
+  
+	`JSON.stringify(obj)`
+	
+	* 注意若属性的值是`undefined`，就不会出现在这个序列化的字符串里面，而且`NaN`和`Infinity`都会被转化成`null`
+	* 解析JSON
+
+		`obj = JSON.parse('{"x":1}');`
+
+	* 自定义     
+	![](../img/JavaScript深入浅出-38.png)
+	
+
 ## 5. 数组
+### 5.1 数组概述
+* Js的数组是**弱类型**，数组中可以有不同类型的元素，数组元素甚至可以是对象或其他数组
+
+	![](../img/JavaScript深入浅出-39.png)
+
+* 创建数组（size：0～2^23 - 1）
+	* 字面量 
+	* `Array` 构造器（`new`可以省略）
+		
+		![](../img/JavaScript深入浅出-40.png)
+
+* 数组元素读写	
+
+	![](../img/JavaScript深入浅出-43.png)
+
+* 数组元素增删，动态的，无需指定大小
+
+	![](../img/JavaScript深入浅出-42.png)
+
+### 5.2 二维数组和稀疏数组
+* 二维数组和其他语言的差不多
+* 稀疏数组：是指有些数组里面有值的数不多，大部分都是`undefined`，所以遍历的时候可以用`in`来判断	
+
+    ![](../img/JavaScript深入浅出-41.png)
+
+
+
+
+
+
 
 ## 6. 函数和作用域
 Js 中的函数也是对象
@@ -207,10 +420,10 @@ Js 中的函数也是对象
 		
 	* 检测某个对象是否有某个属性：
 		* `属性 in 对象`:这会在整个原型链上查找这个属性
-		* `obj.hasOwnProperty('z')`这只会在这个对象及它的原型上查找这个属性
+		* `obj.hasOwnProperty('z')`这只会在这个对象本身查找这个属性
 		![](/img/JavaScript深入浅出-7.png)
  
- * 模拟重载
+ * 模拟重载   
 	![](/img/JavaScript深入浅出-9.png)
 	
 

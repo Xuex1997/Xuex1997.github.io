@@ -190,7 +190,7 @@ Js 中基本类型`number`,`string`,`boolean`都有对应的包装类型。当�
 		* `get`: 在读取属性时，调用的函数。只指定get则表示属性为**只读属性**。默认值为undefined。 
 		* `set`: 在写入属性时调用的函数。在写入属性时调用的函数。只指定set则表示属性为**只写属性**。默认值为`undefined`。
 
-   			![](/img/JavaScript深入浅出-33.png) 
+   			![](/img/JavaScript深入浅出-33.png)    
     		![](/img/JavaScript深入浅出-34.png) 
  
     
@@ -405,14 +405,14 @@ Js 中的函数也是对象
 	* 6.1.4 函数申明，函数表达式和函数构造器的比较   
 	![](/img/JavaScript深入浅出-15.png)
 
-* 6.2 This
+* 6.2 **This**
 	* 6.2.1 全局的`this`，就是`window`
 	* 6.2.2 一般函数的`this`，仍然指向全局对象`window`（严格模式下，`this`指向`undefined`）
 	* 6.2.3 作为对象方法的函数的`this`,`this`一般会指向这个对象   
 	![](/img/JavaScript深入浅出-16.png)
 	* 6.2.4 对象原型链上的`this`    
 	![](/img/JavaScript深入浅出-17.png)
-	* 6.2.5 构造器中的`this`,无对象返回的话，这个this一般是指到这个实例化的对象的      
+	* 6.2.5 构造器中的`this`,无对象返回的话，这个`this`一般是指到这个实例化的对象的      
 	![](/img/JavaScript深入浅出-18.png)
 	* 6.2.6 `call/apply`方法和`this`  ：`call/apply`的作用基本是相同的，只是参数不一样（apply只有两个参数）；以call为例，它可以让另一个对象调用一个方法，将一个函数的对象上下文从初始的上下文改变为由 thisObj 指定的新对象，当在函数中调用 call 这个方法时，函数内部的 this 对象会自动指向 call 方法中的第一个参数（我觉得可以把使用call这个方法的函数里的this都替换成call的第一个参数即可）    
 	![](/img/JavaScript深入浅出-19.png)
@@ -422,7 +422,7 @@ Js 中的函数也是对象
 	* `bind`方法和`this`: `bind`方法生成了一个新的函数，称为绑定函数，将`bar`方法和`obj`对象绑定后，`bar`中的`this`对象被替换为了`obj`，并生成了一个新的函数`boundFunc`，因此可以在全局环境中调用`boundFunc`时，也能够訪问到`obj`对象的属性。而且即使这个绑定函数作为某一对象的属性去调用，也还是按照之前的绑定去运行
 	![](/img/JavaScript深入浅出-21.png)   
 	![](/img/JavaScript深入浅出-22.png)   
-* 6.3 函数的属性与arguments（类数组对象）
+* 6.3 函数的属性与`arguments`（类数组对象）
 	*  `func.name` - 函数名   
 		`func.length` - 形参个数   
 		`arguments.length` - 实参个数 
@@ -433,10 +433,25 @@ Js 中的函数也是对象
 		![](/img/JavaScript深入浅出-24.png)
 		
 		
+* 6.4 闭包--能够读取其他函数内部变量的函数
 
+	![](/img/JavaScript深入浅出-60.png)
+
+	* 例子：函数嵌套函数，内部函数可以引用外部函数的参数和变量，参数和变量不会被垃圾回收机制收回。
+
+		![](/img/JavaScript深入浅出-58.png)
+	* 使用误区（循环闭包）
+
+	    ![](/img/JavaScript深入浅出-58.png)
+	* 实际上只是通过函数的赋值表式方式付给了标签点击事件，并没有运行；当遍历完后，i变成4，根据作用域的原理，向上找到for函数里的i，所以点击执行的时候都会弹出相应的i。闭包可以使变量长期驻扎在内存当中，我们在绑定事件的时候让它自执行一次，把每一次的变量存到内存中；点击执行的时候就会弹出对应本作用域i的序号。
+	
+
+		 
+* 6.5 作用域
+* 6.6 ES3执行上下文
 
 ## 8. Javascript OOP 面向对象程序设计
-* 5.1 `prototype`属性和原型初步理解
+* 8.1 `prototype`属性和原型初步理解
 	* 每一个函数对象都有会有一个`prototype`属性，这个属性是一个对象称为构造子，给这个对象也可以增加属性，而且这个对象也有一个`constructor`属性，这个属性也是对象，正是这个构造函数本身；
 	* 而原型是对象的原型，一般用`_proto_`表示，通过这个构造函数new出来的对象实例的原型`_proto_`就是这个函数的构造子（也就是这个函数的prototype属性对象）
 	
@@ -458,8 +473,8 @@ Js 中的函数也是对象
 	```
    ![](/img/JavaScript深入浅出-2.png)
 
-* 5.2 基于原型的继承
-	* 5.2.1 使用`Object.create`,这是比较提倡的方法
+* 8.2 基于原型的继承
+	* 8.2.1 使用`Object.create`,这是比较提倡的方法
 
 	```
 	function Person() {}
@@ -471,7 +486,7 @@ Js 中的函数也是对象
 	`Object.create(Person.prototype)`函数创建一个空对象，这个空对象的原型就是`Person.prototype`，即Person的构造子，让Student的构造子等于它，就生成了一条原型链    
 	![](/img/JavaScript深入浅出-1.jpeg)
 	
-	* 5.2.2 使用`new`的方法，虽然这样也可以实现继承，但是如果函数本身内部有些属性，在实例化的时候不好传入参数，比如下图中如果`Person`函数有名字和年龄属性，那么`new`的时候应该传入什么值呢；使用1处的方法是不对的，这样子没办法做到继承，给`Student`加自己的方法也会影响到`Person`;3是理想的继承方式，但是在ES5之后才支持，可以用右侧的方法进行兼容。(返回一个空对象，并且原型指向参数)    
+	* 8.2.2 使用`new`的方法，虽然这样也可以实现继承，但是如果函数本身内部有些属性，在实例化的时候不好传入参数，比如下图中如果`Person`函数有名字和年龄属性，那么`new`的时候应该传入什么值呢；使用**1处的方法是不对**的，这样子没办法做到继承，给`Student`加自己的方法也会影响到`Person`;3处是理想的继承方式，但是在ES5之后才支持，可以用右侧的方法进行兼容。(返回一个空对象，并且原型指向参数)    
 	![](/img/JavaScript深入浅出-8.png)
 	* 注意：大多数 **函数对象** 的 **prototype属性对象** 的 **原型** 都是 **Object对象** 的 **prototype对象** 。也正因为如此，大多数对象都有`toString`， `valueof`等继承自`Object.prototype`的方法，但也有一些特例：
 		* 通过`Object.create(null)`创建出来的对象，就没有`_proto_`，因为它创建了一个空对象而且这个空对象的原型指向`null`，因此它也不会有`toString`等方法
@@ -494,9 +509,9 @@ Js 中的函数也是对象
 		```
 		![](/img/JavaScript深入浅出-4.png)
 
-* prototype属性
-	* 改变prototype
-		* 给函数对象的prototype对象添加新的属性会影响到之前已经（new）创建实例化出的函数实例，这个函数实例会继承到这个属性，但是如果改写了这个函数的prototype，之前已经创建实例化的对象并不会受到影响，而之后再创建的对象会以这个新的prototype对象为原型
+* 8.3 `prototype`属性
+	* 改变`prototype`
+		* 给函数对象的`prototype`对象添加新的属性会影响到之前已经（`new`）创建实例化出的函数实例，这个函数实例会继承到这个属性，但是如果改写了这个函数的`prototype`，之前已经创建实例化的对象并不会受到影响，而之后再创建的对象会以这个新的`prototype`对象为原型
 
 		```
 		function Student() {};
@@ -514,8 +529,8 @@ Js 中的函数也是对象
 		```
 		![](/img/JavaScript深入浅出-5.png)
 		
-	* 内置构造器的prototype属性
-		* 修改构造器的prototype会有边界效应，就是在for遍历的时候会变量出修改添加的属性，要想避免这个效应，可以用define property设置相应的属性。
+	* 内置构造器的`prototype`属性
+		* 修改构造器的`prototype`会有边界效应，就是在`for`遍历的时候会变量出修改添加的属性，要想避免这个效应，可以用`defineproperty`设置相应的属性。
 		* 例如：假如大多数对象上希望有某个属性x，设置`Object.property.x=1`就会有边界效应（`for in`的时候会把这个x遍历出来）。可以通过`defineproperty`设置相应的属性。
 		
 			![](/img/JavaScript深入浅出-6.png)
@@ -525,10 +540,18 @@ Js 中的函数也是对象
 		* `obj.hasOwnProperty('z')`这只会在这个对象本身查找这个属性
 
 			![](/img/JavaScript深入浅出-7.png)
- 
- * 模拟重载  
-  
+	
+* 8.3 模拟重载  （参数类型或数量的区别）
+
 	![](/img/JavaScript深入浅出-9.png)
+
+* 8.4 调用父类方法
+
+	![](/img/JavaScript深入浅出-56.png)
+
+* 8.5 链式调用
+
+	![](/img/JavaScript深入浅出-57.png)
 	
 	
 	
@@ -545,9 +568,48 @@ Js 中的函数也是对象
 
 	![](/img/JavaScript深入浅出-50.png)
 
-* 范围符号
+* 范围符号(元字符)
 
 	![](/img/JavaScript深入浅出-51.png)
+   * `\b` 零宽单词边界：我理解就是匹配一个单词的开头或结尾
 
+* 特殊符转义 `/`
+* 分组
+
+	![](/img/JavaScript深入浅出-52.png)
+* 重复
+
+	 ![](/img/JavaScript深入浅出-53.png)
+* Flag标志
+	* `/g`：用于执行全文的搜索（而不是在找到第一个就停止查找,而是找到所有的匹配）；
+	* `/i`：不区分大小写； 
+	* `/m`：多行检索；
+
+	```
+	/abc/gim.test("ABC");//true 用正则表达式字面量 gim顺序没区别
+	RegExp("abc","mgi");//
+	```
+
+* RegExp 对象属性
+	* `global`	RegExp 对象是否具有标志 g
+	* `ignoreCase`	RegExp 对象是否具有标志 i。
+	* `multiline`	 RegExp 对象是否具有标志 m。
+	* `lastIndex`  	一个整数，标示开始下一次匹配的字符位置。
+	* `source`	正则表达式的源文本。
+
+* RegExp 对象方法
+	* `compile`	编译正则表达式。
+
+		![](/img/JavaScript深入浅出-54.png)
+	* `exec`	检索字符串中指定的值。返回找到的值，并确定其位置。
+	* `test`	检索字符串中指定的值。返回 `true` 或 `false`。
+
+* 支持正则表达式的 String 对象的方法
+	* `search`	检索与正则表达式相匹配的字符串的首位位置
+	* `match`	找到一个或多个正则表达式的匹配。
+	* `replace`	替换与正则表达式匹配的子串。
+	* `split`  	把字符串分割为字符串数组，用正则作为分隔符。
+
+		![](/img/JavaScript深入浅出-55.png)
 	
 
